@@ -57,18 +57,20 @@ def load_data():
         tree.insert("", "end", values=(row[0].strip(), row[1].strip(), row[2].strip(), row[3], row[4], row[5], row[6], row[7]))
 
 def auto_maVe():
+    ma_list_tree = [tree.item(item)['values'][0].strip() for item in tree.get_children()]
+
     cursor.execute("SELECT maVe FROM DATVE")
-    ma_list = [row[0] for row in cursor.fetchall()]
+    ma_list_sql = [row[0].strip() for row in cursor.fetchall()]
+    
+    # Gộp mã
+    ma_list = list(set(ma_list_tree + ma_list_sql))
+    
     if not ma_list:
-        return "VE00000001"
+        return "MV00000001"
+    
     so_list = sorted([int(ma[2:]) for ma in ma_list if ma[2:].isdigit()])
-    next_num = 1
-    for num in so_list:
-        if num == next_num:
-            next_num += 1
-        elif num > next_num:
-            break
-    return f"VE{next_num:08d}"
+    next_num = so_list[-1] + 1
+    return f"MV{next_num:08d}"
 
 def lay_danh_sach_ma_khach_hang():
     cursor.execute("SELECT maKh FROM KHACHHANG")
@@ -121,6 +123,7 @@ def xoa():
     if confirm:
         tree.delete(selected[0])
         lam_moi_form()
+        
 
 def sua():
     selected = tree.selection()
@@ -265,9 +268,11 @@ btn_luu.place(x=880, y=450)
 btn_thoat = tk.Button(root, text="Thoát", **button_style, command=thoat)
 btn_thoat.place(x=880, y=530)
 
+
 tree.bind("<<TreeviewSelect>>", hien_thi_chi_tiet)
 
-lam_moi_form()
 load_data()
+lam_moi_form()
+
 
 root.mainloop()

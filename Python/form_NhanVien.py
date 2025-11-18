@@ -77,14 +77,14 @@ def toggle_luong_visibility(show=True):
     else:
         tree["displaycolumns"] = ("maNV","so_cccd","hoTen","sdt","phai","ngsinh","dchi","chucVu","soChuyen")
 
-tree_frame = tk.LabelFrame(root, text="Danh sách nhân viên", font=("Times New Roman",12), bg="#fff8dc", width=900, height=400)
+tree_frame = tk.LabelFrame(root, text="Danh sách nhân viên", font=("Times New Roman",12), bg="#fff8dc", width=1000, height=400)
 tree_frame.place(x=50, y=280)
 
 columns = ("maNV","so_cccd","hoTen","sdt","phai","ngsinh","dchi","chucVu","soChuyen","luong")
 tree = ttk.Treeview(tree_frame, columns=columns, show="headings", height=15)
 for col, text, width in zip(columns,
                             ["Mã NV","Số CCCD","Họ Tên","SĐT","Giới Tính","Ngày Sinh","Địa Chỉ","Chức Vụ","Số Chuyến","Lương Thực Lãnh"],
-                            [80,100,150,100,60,100,150,100,80,120]):
+                            [80,100,150,100,60,100,300,100,80,120]):
     tree.heading(col, text=text)
     tree.column(col, width=width, anchor="center")
 
@@ -186,6 +186,8 @@ def xem_luong():
 
 def kiem_tra_cccd(so_cccd: str) -> bool:
     return bool(re.fullmatch(r"0\d{11}", so_cccd))
+def kiem_tra_sdt(sdt: str) -> bool:
+    return bool(re.fullmatch(r"0\d{9}", sdt))
 
 
 def them():
@@ -200,6 +202,9 @@ def them():
 
     if not kiem_tra_cccd(so_cccd):
         messagebox.showerror("Lỗi","Số CCCD phải 12 số bắt đầu 0")
+        return
+    if not kiem_tra_sdt(sdt):
+        messagebox.showerror("Lỗi","Số điện thoại phải 10 số bắt đầu 0")
         return
     if not (hoTen and sdt and chucVu):
         messagebox.showwarning("Thiếu dữ liệu","Nhập đầy đủ thông tin!")
